@@ -73,7 +73,45 @@ export default class DoublyLinkedList<T> {
         this.tail = node;
     }
 
-    remove(item: T): T | undefined {}
+    remove(item: T): T | undefined {
+        if (!this.head) return;
+
+        if (this.head.val === item && this.length == 1) {
+            this.head = this.tail = undefined;
+            this.length = 0;
+            return item;
+        }
+
+        if (this.head.val === item) {
+            this.head = this.head.next;
+            this.head!.prev = undefined;
+            this.length--;
+            return item;
+        }
+
+        if (this.tail?.val === item) {
+            this.tail = this.tail.prev;
+            this.tail!.next = undefined;
+            this.length--;
+            return item;
+        }
+
+        let cur: Node<T> | undefined = this.head;
+        do {
+            if (cur.val === item) {
+                break;
+            }
+            cur = cur.next;
+        } while (cur);
+
+        if (!cur) {
+            return;
+        }
+        this.length--;
+        cur.next!.prev = cur.prev;
+        cur.prev!.next = cur.next;
+        return item;
+    }
     get(idx: number): T | undefined {
         if (idx >= this.length) {
             throw Error("Index out of bounds");
